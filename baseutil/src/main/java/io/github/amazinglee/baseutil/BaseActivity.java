@@ -18,18 +18,9 @@ import com.orhanobut.logger.Logger;
 
 import io.github.amazinglee.baseutil.manager.AppManager;
 
-/**
- * 项目名称：Base
- * 类描述：BaseActivity类，继承自AppCompatActivity，功能如下
- * 1.写了三个抽象类，用于初始化界面和获取数据
- * 2.
- * 创建人：renhao
- * 创建时间：2016/8/31 16:14
- * 修改备注：
- */
 public abstract class BaseActivity extends AppCompatActivity {
     /**
-     * 日志输出标志
+     * Log output symbol
      **/
     protected final String TAG = this.getClass().getSimpleName();
     public static final String ACTION_NETWORK_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
@@ -50,15 +41,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 是否沉浸状态栏
+     * Whether the status bar
      **/
     private boolean isSetStatusBar = true;
     /**
-     * 是否允许全屏
+     * Whether to allow full screen
      **/
     private boolean mAllowFullScreen = true;
     /**
-     * 是否禁止旋转屏幕
+     * Whether to ban the rotating screen
      **/
     private boolean isAllowScreenRoate = false;
 
@@ -111,35 +102,22 @@ public abstract class BaseActivity extends AppCompatActivity {
         initDate();
     }
 
-    /**
-     * [沉浸状态栏]
-     */
+
     private void steepStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // 透明状态栏
             getWindow().addFlags(
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            // 透明导航栏
             getWindow().addFlags(
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
     }
 
-    /**
-     * [页面跳转]
-     *
-     * @param clz
-     */
+
     public void startActivity(Class<?> clz) {
         startActivity(new Intent(BaseActivity.this, clz));
     }
 
-    /**
-     * [携带数据的页面跳转]
-     *
-     * @param clz
-     * @param bundle
-     */
+
     public void startActivity(Class<?> clz, Bundle bundle) {
         Intent intent = new Intent();
         intent.setClass(this, clz);
@@ -149,13 +127,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * [含有Bundle通过Class打开编辑界面]
-     *
-     * @param cls
-     * @param bundle
-     * @param requestCode
-     */
+
     public void startActivityForResult(Class<?> cls, Bundle bundle,
                                        int requestCode) {
         Intent intent = new Intent();
@@ -167,26 +139,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * [初始化参数]
-     *
-     * @param parms
-     */
+
     public abstract void initParms(Bundle parms);
 
-    /**
-     * 初始化标题栏
-     */
     protected abstract void initActionBar();
 
-    /**
-     * 初始化视图
-     */
     protected abstract void initView();
 
-    /**
-     * 初始化数据
-     */
     protected abstract void initDate();
 
     @Override
@@ -205,7 +164,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         filter.addAction(ACTION_PUSH_DATA);
         filter.addAction(ACTION_NEW_VERSION);
         registerReceiver(receiver, filter);
-        //还可能发送统计数据，比如第三方的SDK 做统计需求
     }
 
     @Override
@@ -227,7 +185,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onPause();
         activityState = ACTIVITY_PAUSE;
         unregisterReceiver(receiver);
-        //还可能发送统计数据，比如第三方的SDK 做统计需求
     }
 
     @Override
@@ -241,46 +198,33 @@ public abstract class BaseActivity extends AppCompatActivity {
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // 处理各种情况
             String action = intent.getAction();
-            if (ACTION_NETWORK_CHANGE.equals(action)) { // 网络发生变化
-                // 处理网络问题
+            if (ACTION_NETWORK_CHANGE.equals(action)) {
                 ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo mobileInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
                 NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 NetworkInfo activeInfo = manager.getActiveNetworkInfo();
                 onNetStateChanged(context, mobileInfo, wifiInfo, activeInfo);
-            } else if (ACTION_PUSH_DATA.equals(action)) { // 可能有新数据
-                //更倾向于用eventbus解决
+            } else if (ACTION_PUSH_DATA.equals(action)) {
                /* Bundle b = intent.getExtras();
                 MData<Employee> mdata = (MData<Employee>) b.get("data");
-                if (dataCallback != null) { // 数据通知
+                if (dataCallback != null) {
                     dataCallback.onNewData(mdata);
                 }*/
-            } else if (ACTION_NEW_VERSION.equals(action)) { // 可能发现新版本
-                // VersionDialog 可能是版本提示是否需要下载的对话框
+            } else if (ACTION_NEW_VERSION.equals(action)) {
                 onNewVersion();
             }
         }
     };
 
-    /**
-     * 网络状态发生改变
-     *
-     * @param context
-     * @param mobileInfo 手机网络
-     * @param wifiInfo   wifi
-     * @param activeInfo 如果无网络连接activeInfo为null
-     */
+
     protected abstract void onNetStateChanged(Context context, NetworkInfo mobileInfo, NetworkInfo wifiInfo, NetworkInfo activeInfo);
 
-    /**
-     * 有新的版本
-     */
+
     protected abstract void onNewVersion();
 
     /**
-     * 获取android的版本
+     *
      * BASE //October 2008: The original, first, version of Android.
      * BASE_1_1 //February 2009: First Android update, officially called 1.1.
      * CUPCAKE //May 2009: Android 1.5.
@@ -305,17 +249,14 @@ public abstract class BaseActivity extends AppCompatActivity {
      * LOLLIPOP_MR1//5.1	API level 22
      * M//6.0	API level 23
      *
-     * @return
+     *
+     * @return version
      */
     protected int getVersionCode() {
         return Build.VERSION.SDK_INT;
     }
 
-    /**
-     * 显示Toast通知
-     *
-     * @param msg
-     */
+
     protected void showToast(String msg) {
         Toast.makeText(mAppManager.currentActivity(), msg, Toast.LENGTH_SHORT).show();
     }
@@ -330,14 +271,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    /**
-     * 回退事件
-     */
+
     protected abstract void onBack();
 
-    /**
-     * 退出应用
-     */
     public void exitApp() {
         mAppManager.AppExit(this);
     }

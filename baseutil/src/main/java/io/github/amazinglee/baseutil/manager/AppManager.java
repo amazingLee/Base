@@ -8,11 +8,10 @@ import java.util.Stack;
 import io.github.amazinglee.baseutil.BaseActivity;
 
 /**
- * 应用程序Activity管理类：用于Activity管理和应用程序退出
+ * Application Activity management class:used for the Activity management and the application exits
  *
  * @author kymjs
  * @version 1.0
- * @created 2013-11-24
  */
 public class AppManager {
     private static Stack<BaseActivity> activityStack;
@@ -21,9 +20,6 @@ public class AppManager {
     private AppManager() {
     }
 
-    /**
-     * 单实例 , UI无需考虑多线程同步问题
-     */
     public static AppManager getAppManager() {
         if (instance == null) {
             instance = new AppManager();
@@ -31,9 +27,6 @@ public class AppManager {
         return instance;
     }
 
-    /**
-     * 添加Activity到栈
-     */
     public void addActivity(BaseActivity activity) {
         if (activityStack == null) {
             activityStack = new Stack<BaseActivity>();
@@ -42,9 +35,6 @@ public class AppManager {
         //Logger.v("stack size  " + activityStack.size());
     }
 
-    /**
-     * 获取当前Activity（栈顶Activity）
-     */
     public BaseActivity currentActivity() {
         if (activityStack == null || activityStack.isEmpty()) {
             return null;
@@ -53,9 +43,7 @@ public class AppManager {
         return activity;
     }
 
-    /**
-     * 获取当前Activity（栈顶Activity） 没有找到则返回null
-     */
+
     public BaseActivity findActivity(Class<?> cls) {
         BaseActivity activity = null;
         for (BaseActivity aty : activityStack) {
@@ -67,17 +55,13 @@ public class AppManager {
         return activity;
     }
 
-    /**
-     * 结束当前Activity（栈顶Activity）
-     */
+
     public void finishActivity() {
         BaseActivity activity = activityStack.lastElement();
         finishActivity(activity);
     }
 
-    /**
-     * 结束指定的Activity(重载)
-     */
+
     public void finishActivity(BaseActivity activity) {
         if (activity != null) {
             activityStack.remove(activity);
@@ -86,9 +70,7 @@ public class AppManager {
         }
     }
 
-    /**
-     * 结束指定的Activity(重载)
-     */
+
     public void finishActivity(Class<?> cls) {
         for (BaseActivity activity : activityStack) {
             if (activity.getClass().equals(cls)) {
@@ -97,11 +79,7 @@ public class AppManager {
         }
     }
 
-    /**
-     * 关闭除了指定activity以外的全部activity 如果cls不存在于栈中，则栈全部清空
-     *
-     * @param cls
-     */
+
     public void finishOthersActivity(Class<?> cls) {
         for (BaseActivity activity : activityStack) {
             if (!(activity.getClass().equals(cls))) {
@@ -110,9 +88,7 @@ public class AppManager {
         }
     }
 
-    /**
-     * 结束所有Activity
-     */
+
     public void finishAllActivity() {
         for (int i = 0, size = activityStack.size(); i < size; i++) {
             if (null != activityStack.get(i)) {
@@ -122,9 +98,7 @@ public class AppManager {
         activityStack.clear();
     }
 
-    /**
-     * 应用程序退出
-     */
+
     public void AppExit(Context context) {
         try {
             finishAllActivity();

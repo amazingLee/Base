@@ -3,13 +3,6 @@ package io.github.amazinglee.baseutil.local;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * 项目名称：BaseAndroid
- * 类描述： 储存或读取一些本地数据
- * 创建人：renhao
- * 创建时间：2016/7/22 14:29
- * 修改备注：
- */
 public class LocalDate {
     public static final String PREFERENCE_NAME = "local_date";
     private static Context sContext;
@@ -31,10 +24,10 @@ public class LocalDate {
     }
 
     /**
-     * 保存数据
+     * Save the data
      *
-     * @param strName  键
-     * @param strValue 键值
+     * @param strName  key
+     * @param strValue The key value
      */
     public void setLocalDate(String strName, String strValue) {
         editor = mSharedPreferences.edit();
@@ -43,21 +36,21 @@ public class LocalDate {
     }
 
     /**
-     * 读取数据
+     * Read the data
      *
-     * @param strName  键
-     * @param dftValue 缺省值
-     * @return 键值
+     * @param strName  key
+     * @param dftValue The default value
+     * @return Key value
      */
     public String getLocalDate(String strName, String dftValue) {
         return mSharedPreferences.getString(strName, dftValue);
     }
 
     /**
-     * 存储布尔类型的值
+     * Boolean value of the type of storage
      *
-     * @param name
-     * @param value
+     * @param name key
+     * @param value The key value
      */
     public void setLocalDate(String name, boolean value) {
         editor = mSharedPreferences.edit();
@@ -66,11 +59,11 @@ public class LocalDate {
     }
 
     /**
-     * 获取布尔类型的值
+     * To obtain the value of the Boolean type
      *
-     * @param name
-     * @param dftValue
-     * @return
+     * @param name key
+     * @param dftValue The default value
+     * @return Key value
      */
     public boolean getLocalDate(String name, boolean dftValue) {
         return mSharedPreferences.getBoolean(name, dftValue);
