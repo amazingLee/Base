@@ -5,9 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Base64;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.FileInputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
@@ -30,7 +28,6 @@ public class Util {
     }
 
 
-
     public static Bitmap getBitmapFromByte(byte[] img) {
         if (img != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
@@ -39,7 +36,6 @@ public class Util {
             return null;
         }
     }
-
 
 
     public static Bitmap getBitmapFromByte(String img) {
@@ -54,24 +50,43 @@ public class Util {
 
 
     public static String getMac() {
-        String macSerial = null;
-        String str = "";
+        String mac = null;
         try {
-            Process pp = Runtime.getRuntime().exec("cat /sys/class/net/wlan0/address ");
-            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
-            LineNumberReader input = new LineNumberReader(ir);
-
-            for (; null != str; ) {
-                str = input.readLine();
-                if (str != null) {
-                    macSerial = str.trim();
-                    break;
-                }
+            String path = "sys/class/net/eth0/address";
+            FileInputStream fis_name = new FileInputStream(path);
+            byte[] buffer_name = new byte[8192];
+            int byteCount_name = fis_name.read(buffer_name);
+            if (byteCount_name > 0) {
+                mac = new String(buffer_name, 0, byteCount_name, "utf-8");
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            if (mac == null) {
+                fis_name.close();
+                return "";
+            }
+            fis_name.close();
+        } catch (Exception io) {
+            String path = "sys/class/net/wlan0/address";
+            FileInputStream fis_name;
+            try {
+                fis_name = new FileInputStream(path);
+                byte[] buffer_name = new byte[8192];
+                int byteCount_name = fis_name.read(buffer_name);
+                if (byteCount_name > 0) {
+                    mac = new String(buffer_name, 0, byteCount_name, "utf-8");
+                }
+                fis_name.close();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-        return macSerial;
+
+        if (mac == null) {
+            return "";
+        } else {
+            return mac.trim();
+        }
+
     }
 
 
